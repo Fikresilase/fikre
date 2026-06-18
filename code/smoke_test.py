@@ -34,14 +34,16 @@ def check_data():
 
 
 def check_retrieval():
-    from FlagEmbedding import BGEM3FlagModel, FlagReranker
+    from FlagEmbedding import BGEM3FlagModel
+    from rerank_model import Reranker
     emb = BGEM3FlagModel(C.EMBEDDER, use_fp16=True)
     v = emb.encode(["What is malaria?", "Olumbe ki?"])["dense_vecs"]
     print(f"[3a] bge-m3 dense shape={v.shape}")
     free_vram(emb)
-    rr = FlagReranker(C.RERANKER, use_fp16=True)
-    s = rr.compute_score([["What is malaria?", "Malaria is a disease."]], normalize=True)
-    print(f"[3b] reranker score={s}")
+    rr = Reranker(C.RERANKER)
+    s = rr.score([["What is malaria?", "Malaria is a disease."],
+                  ["What is malaria?", "Bananas are yellow."]])
+    print(f"[3b] reranker scores={s}  (first should be > second)")
     free_vram(rr)
 
 

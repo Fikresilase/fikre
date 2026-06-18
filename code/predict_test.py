@@ -20,7 +20,8 @@ SUBMISSION = C.ARTIFACTS / "submission.csv"
 
 
 def retrieve_and_rerank():
-    from FlagEmbedding import BGEM3FlagModel, FlagReranker
+    from FlagEmbedding import BGEM3FlagModel
+    from rerank_model import Reranker
     from utils import save_json
 
     test = pd.read_csv(C.TEST_CSV)
@@ -43,14 +44,12 @@ def retrieve_and_rerank():
         cands[rid] = [train_ids[j] for j in idx]
     save_json(cands, TEST_CAND)
 
-    rr = FlagReranker(C.RERANKER, use_fp16=True)
+    rr = Reranker(C.RERANKER)
     val_q = dict(zip(test[C.COL_ID].astype(str), test[C.COL_IN].fillna("").astype(str)))
     exem = {}
     for rid, cand_ids in cands.items():
         pairs = [[val_q[rid], train_q.get(c, "")] for c in cand_ids]
-        scores = rr.compute_score(pairs, normalize=True)
-        if not isinstance(scores, list):
-            scores = [scores]
+        scores = rr.score(pairs)
         ranked = [c for _, c in sorted(zip(scores, cand_ids), key=lambda x: -x[0])]
         exem[rid] = ranked[:C.N_EXEMPLARS]
     save_json(exem, TEST_EXEM)

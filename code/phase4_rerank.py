@@ -14,23 +14,21 @@ def run():
         print(f"[phase4] exemplars cached -> {C.EXEMPLARS_JSON}; skipping.")
         return
 
-    from FlagEmbedding import FlagReranker
+    from rerank_model import Reranker
 
     sample = pd.read_csv(C.SAMPLE_CSV)
     train = pd.read_csv(C.TRAIN_CSV)
     train_q = dict(zip(train[C.COL_ID].astype(str), train[C.COL_IN].fillna("").astype(str)))
     candidates = load_json(C.CANDIDATES_JSON)
 
-    reranker = FlagReranker(C.RERANKER, use_fp16=True)
+    reranker = Reranker(C.RERANKER)
     exemplars = {}
     val_q = dict(zip(sample[C.COL_ID].astype(str), sample[C.COL_IN].fillna("").astype(str)))
 
     for n, (row_id, cand_ids) in enumerate(candidates.items()):
         q = val_q[row_id]
         pairs = [[q, train_q.get(cid, "")] for cid in cand_ids]
-        scores = reranker.compute_score(pairs, normalize=True)
-        if not isinstance(scores, list):
-            scores = [scores]
+        scores = reranker.score(pairs)
         ranked = [cid for _, cid in sorted(zip(scores, cand_ids), key=lambda x: -x[0])]
         exemplars[row_id] = ranked[:C.N_EXEMPLARS]
         if (n + 1) % 200 == 0:
