@@ -1,0 +1,27 @@
+services:
+  harness:
+    build:
+      context: .
+      args:
+        NGC_TAG: "25.05-py3"        # <- match the NGC tag proven on the GB10
+    image: fikre-harness:latest
+    command: python /workspace/code/run_all.py
+    environment:
+      FIKRE_BASE: /workspace
+      GEN_BACKEND: vllm             # vllm | hf  (switch to hf if vLLM won't run on GB10)
+      HF_HOME: /root/.cache/huggingface
+      HF_HUB_ENABLE_HF_TRANSFER: "1"
+      # HF_TOKEN: "hf_xxx"          # uncomment if any model repo is gated
+    volumes:
+      - ./data:/workspace/data
+      - ./code:/workspace/code
+      - ./artifacts:/workspace/artifacts
+      - ./hf-cache:/root/.cache/huggingface
+    shm_size: "16gb"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

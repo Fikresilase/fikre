@@ -1,0 +1,12 @@
+# Environment-only deps. torch/CUDA come from the NGC base image — do NOT pin torch here.
+#
+# vLLM is installed separately in the Dockerfile so a torch conflict doesn't break the build.
+# These are the lightweight, arch-independent pieces:
+FlagEmbedding>=1.2.10      # bge-m3 (dense) + bge-reranker-v2-m3
+rouge-score>=0.1.2
+pandas>=2.0
+numpy>=1.24
+sentencepiece>=0.1.99
+# transformers / accelerate are present in the NGC image; uncomment to pin if needed:
+# transformers>=4.44
+# accelerate>=0.33

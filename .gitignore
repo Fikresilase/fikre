@@ -1,0 +1,7 @@
+# Never commit big / generated things — the repo is the *recipe* only.
+data/*.csv
+artifacts/*
+hf-cache/*
+!**/.gitkeep
+__pycache__/
+*.pyc
