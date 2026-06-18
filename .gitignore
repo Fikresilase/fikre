@@ -1,5 +1,5 @@
-# Never commit big / generated things — the repo is the *recipe* only.
-data/*.csv
+# Data IS committed now (so `git pull` brings it to the Spark).
+# Still never commit generated outputs or model weights.
 artifacts/*
 hf-cache/*
 !**/.gitkeep

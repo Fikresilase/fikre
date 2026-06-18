@@ -8,9 +8,9 @@ DATA_DIR = BASE / "data"
 ARTIFACTS = BASE / "artifacts"
 ARTIFACTS.mkdir(parents=True, exist_ok=True)
 
-TRAIN_CSV = DATA_DIR / os.environ.get("TRAIN_FILE", "train.csv")
-VAL_CSV = DATA_DIR / os.environ.get("VAL_FILE", "val.csv")
-TEST_CSV = DATA_DIR / os.environ.get("TEST_FILE", "test.csv")
+TRAIN_CSV = DATA_DIR / os.environ.get("TRAIN_FILE", "Train.csv")
+VAL_CSV = DATA_DIR / os.environ.get("VAL_FILE", "Val.csv")
+TEST_CSV = DATA_DIR / os.environ.get("TEST_FILE", "Test.csv")
 
 # cached artifacts (each phase writes one; next phase reads it -> crash-resumable)
 SAMPLE_CSV = ARTIFACTS / "sample.csv"
