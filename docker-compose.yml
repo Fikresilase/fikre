@@ -3,7 +3,7 @@ services:
     build:
       context: .
       args:
-        NGC_TAG: "25.05-py3"        # <- match the NGC tag proven on the GB10
+        NGC_TAG: ${NGC_TAG:-25.05-py3}   # override in .env once you find a tag that pulls
     image: fikre-harness:latest
     command: python /workspace/code/run_all.py
     environment:
@@ -11,7 +11,7 @@ services:
       GEN_BACKEND: vllm             # vllm | hf  (switch to hf if vLLM won't run on GB10)
       HF_HOME: /root/.cache/huggingface
       HF_HUB_ENABLE_HF_TRANSFER: "1"
-      # HF_TOKEN: "hf_xxx"          # uncomment if any model repo is gated
+      HF_TOKEN: ${HF_TOKEN:-}       # read from .env (gitignored); empty if unset
     volumes:
       - ./data:/workspace/data
       - ./code:/workspace/code

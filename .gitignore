@@ -3,5 +3,8 @@
 artifacts/*
 hf-cache/*
 !**/.gitkeep
+
+# secrets — never commit the real token
+.env
 __pycache__/
 *.pyc
