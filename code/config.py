@@ -60,7 +60,7 @@ N_CANDIDATES = 20      # dense top-k before rerank
 N_EXEMPLARS = 8        # after rerank, into the prompt
 
 # ----------------------------------------------------------------------------- generation
-GEN_BACKEND = os.environ.get("GEN_BACKEND", "vllm").lower()   # vllm | hf
+GEN_BACKEND = os.environ.get("GEN_BACKEND", "hf").lower()   # hf | vllm
 DTYPE = "bfloat16"
 GPU_MEM_UTIL = float(os.environ.get("GPU_MEM_UTIL", "0.90"))
 # per-subset answer length cap (African langs tokenize longer -> a bit more headroom)

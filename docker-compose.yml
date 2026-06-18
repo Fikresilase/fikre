@@ -8,7 +8,7 @@ services:
     command: python /workspace/code/run_all.py
     environment:
       FIKRE_BASE: /workspace
-      GEN_BACKEND: vllm             # vllm | hf  (switch to hf if vLLM won't run on GB10)
+      GEN_BACKEND: hf               # hf transformers (vLLM clobbered CUDA torch on this image)
       HF_HOME: /root/.cache/huggingface
       HF_HUB_ENABLE_HF_TRANSFER: "1"
       HF_TOKEN: ${HF_TOKEN:-}       # read from .env (gitignored); empty if unset

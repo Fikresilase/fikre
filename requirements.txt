@@ -7,6 +7,6 @@ rouge-score>=0.1.2
 pandas>=2.0
 numpy>=1.24
 sentencepiece>=0.1.99
-# transformers / accelerate are present in the NGC image; uncomment to pin if needed:
-# transformers>=4.44
-# accelerate>=0.33
+# HF generation backend deps (pure-python; safe under the torch constraint):
+transformers>=4.44
+accelerate>=0.33
