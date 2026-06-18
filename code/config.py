@@ -28,29 +28,30 @@ COL_ID, COL_IN, COL_OUT, COL_SUBSET = "ID", "input", "output", "subset"
 SEED = 42
 
 # ----------------------------------------------------------------------------- models
-# NOTE: VERIFY these repo IDs on HuggingFace before downloading. Names are placeholders
-# from discussion and may not be exact. Override via env without editing code.
-MODEL_QWEN = os.environ.get("MODEL_QWEN", "Qwen/Qwen3.5-35B-A3B")            # English subsets
-MODEL_AFRIQWEN = os.environ.get("MODEL_AFRIQWEN", "McGill-NLP/AfriqueQwen-14B")  # Aka/Swa/Amh
+# Confirmed repo IDs (verified on HuggingFace). Override via env without editing code.
+MODEL_AFRIQWEN = os.environ.get("MODEL_AFRIQWEN", "McGill-NLP/AfriqueQwen-14B")  # English + Aka/Swa/Amh
 MODEL_SUNFLOWER = os.environ.get("MODEL_SUNFLOWER", "Sunbird/Sunflower-14B")     # Luganda
+# Optional English specialist — only wire back in if Val shows English ROUGE lagging.
+MODEL_QWEN = os.environ.get("MODEL_QWEN", "Qwen/Qwen3.5-35B-A3B")
 
 EMBEDDER = os.environ.get("EMBEDDER", "BAAI/bge-m3")
 RERANKER = os.environ.get("RERANKER", "BAAI/bge-reranker-v2-m3")
 
-# subset -> (model, human language name for the prompt)
+# subset -> human language name for the prompt
 SUBSET_LANG = {
     "Eng_Uga": "English", "Eng_Gha": "English", "Eng_Ken": "English", "Eng_Eth": "English",
     "Aka_Gha": "Akan (Twi)", "Swa_Ken": "Swahili", "Amh_Eth": "Amharic", "Lug_Uga": "Luganda",
 }
+# AfriqueQwen handles English + Akan/Swahili/Amharic; Sunflower handles Luganda.
 SUBSET_MODEL = {
-    "Eng_Uga": MODEL_QWEN, "Eng_Gha": MODEL_QWEN, "Eng_Ken": MODEL_QWEN, "Eng_Eth": MODEL_QWEN,
-    "Aka_Gha": MODEL_AFRIQWEN, "Swa_Ken": MODEL_AFRIQWEN, "Amh_Eth": MODEL_AFRIQWEN,
-    "Lug_Uga": MODEL_SUNFLOWER,
+    "Eng_Uga": MODEL_AFRIQWEN, "Eng_Gha": MODEL_AFRIQWEN, "Eng_Ken": MODEL_AFRIQWEN,
+    "Eng_Eth": MODEL_AFRIQWEN, "Aka_Gha": MODEL_AFRIQWEN, "Swa_Ken": MODEL_AFRIQWEN,
+    "Amh_Eth": MODEL_AFRIQWEN, "Lug_Uga": MODEL_SUNFLOWER,
 }
 # generation order = grouped by model, so each model loads once then is torn down.
+# 2 passes now (no 70GB Qwen): AfriqueQwen for 7 subsets, Sunflower for Luganda.
 MODEL_PASSES = [
-    (MODEL_QWEN, ["Eng_Uga", "Eng_Gha", "Eng_Ken", "Eng_Eth"]),
-    (MODEL_AFRIQWEN, ["Aka_Gha", "Swa_Ken", "Amh_Eth"]),
+    (MODEL_AFRIQWEN, ["Eng_Uga", "Eng_Gha", "Eng_Ken", "Eng_Eth", "Aka_Gha", "Swa_Ken", "Amh_Eth"]),
     (MODEL_SUNFLOWER, ["Lug_Uga"]),
 ]
 

@@ -76,7 +76,7 @@ def check_generation(model_key):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default="qwen", choices=["qwen", "afriqwen", "sunflower"])
+    ap.add_argument("--model", default="afriqwen", choices=["qwen", "afriqwen", "sunflower"])
     ap.add_argument("--skip-gen", action="store_true", help="only test torch/data/retrieval")
     args = ap.parse_args()
 
