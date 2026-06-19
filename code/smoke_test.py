@@ -67,7 +67,7 @@ def check_generation(model_key):
         from transformers import AutoModelForCausalLM, AutoTokenizer
         tok = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
         model = AutoModelForCausalLM.from_pretrained(
-            model_id, torch_dtype=torch.bfloat16, device_map="auto", trust_remote_code=True)
+            model_id, dtype=torch.bfloat16, device_map={"": 0}, trust_remote_code=True)
         prompt = tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)
         enc = tok(prompt, return_tensors="pt").to(model.device)
         gen = model.generate(**enc, do_sample=False, max_new_tokens=64,

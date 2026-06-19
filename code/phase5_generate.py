@@ -87,8 +87,10 @@ def _gen_hf(model_id, items):
     tok.truncation_side = "left"
     if tok.pad_token_id is None:
         tok.pad_token = tok.eos_token
+    # GB10 reports memory as "Not Supported", so device_map="auto" wrongly offloads to CPU.
+    # Force the whole model onto GPU 0 (28GB fits easily in 128GB unified memory).
     model = AutoModelForCausalLM.from_pretrained(
-        model_id, torch_dtype=torch.bfloat16, device_map="auto", trust_remote_code=True)
+        model_id, dtype=torch.bfloat16, device_map={"": 0}, trust_remote_code=True)
     model.eval()
     out, buf = [], []
     BATCH = int(os.environ.get("HF_BATCH", "8"))
